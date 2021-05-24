@@ -7,6 +7,7 @@ $data = json_decode(file_get_contents("php://input"));
 $nama = $data->nama;
 $gaji = $data->gaji;
 $email = $data->email;
+
 $id = $data->id;
 
 $sql = $koneksi->query("UPDATE employee SET nama = '$nama', gaji = '$gaji', email = '$email' WHERE id = '$id'");
