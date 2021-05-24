@@ -23,7 +23,7 @@
             <td>:</td>
             <td><input type="text" id="email"></td>
         </tr>
-        <input type="text" id="id">
+        <input type="hidden" id="id">
         <tr>
             <td></td>
             <td></td>
@@ -157,36 +157,41 @@
 
     function hapus(id) {
         var xhttp = new XMLHttpRequest();
+        var konfirmasi = confirm("Yakin ? Mau di Hapus ?");
 
-        xhttp.open("GET", "hapus.php?id="+id, true);
+        if (konfirmasi) {
+            xhttp.open("GET", "hapus.php?id="+id, true);
 
-        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
 
-                var response = this.responseText;
-                if(response == 1){
-                    alert("Delete successfully.");
+                    var response = this.responseText;
+                    if(response == 1){
+                        alert("Delete successfully.");
 
-                    load();
+                        load();
+                    }
+
                 }
+            };
 
-            }
-        };
-
-        xhttp.send();
+            xhttp.send();
+        }
     }
 
     function update() {
-        var nama = document.getElementById('nama');
-        var gaji = document.getElementById('gaji');
-        var email = document.getElementById('email');
-        var id = document.getElementById("id");
+
+        var id = document.getElementById('id').value;
+        var nama = document.getElementById('nama').value;
+        var gaji = document.getElementById('gaji').value;
+        var email = document.getElementById('email').value;
+        
 
         if(nama != '' && gaji !='' && email != ''){
 
-        var data = {nama: nama, gaji: gaji, email: email};
+        var data = { id : id, nama : nama, gaji : gaji, email : email };
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "update.php", true);
 
