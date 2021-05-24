@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percobaan Ajax</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>Nama</th>
+            <td>:</td>
+            <td><input type="text" id="nama"></td>
+        </tr>
+        <tr>
+            <th>Gaji</th>
+            <td>:</td>
+            <td><input type="text" id="gaji"></td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>:</td>
+            <td><input type="text" id="email"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td><button id="btn" onclick="insert()">Submit</button></td>
+        </tr>
+    </table>
+    <br>
+    
+    <table id="data" border="1">
+        <thead>
+            <th>Nama</th>
+            <th>Gaji</th>
+            <th>Email</th>
+            <th>Aksi</th>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+<script>
+    load();
+
+    function load() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "tampil.php", true);
+
+        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+
+                var response = JSON.parse(this.responseText);
+                var empTable = document.getElementById("data").getElementsByTagName("tbody")[0];
+
+                empTable.innerHTML = "";
+
+                for (var key in response) {
+                    if (response.hasOwnProperty(key)) {
+                        var val = response[key];
+
+                        var NewRow = empTable.insertRow(0); 
+                        var nama_cell = NewRow.insertCell(0); 
+                        var gaji_cell = NewRow.insertCell(1); 
+                        var email_cell = NewRow.insertCell(2);
+                        var aksi_cell = NewRow.insertCell(3);
+
+                        nama_cell.innerHTML = val['nama']; 
+                        gaji_cell.innerHTML = val['gaji']; 
+                        email_cell.innerHTML = val['email']; 
+                        aksi_cell.innerHTML = '<button onclick="edit('+ val['id'] +')">Edit</button> | <button onclick="hapus('+ val['id'] +')">Hapus</button>'; 
+                        
+                    }
+                } 
+
+            }
+        };
+
+        xhttp.send();
+
+        
+    }
+
+    function insert() {
+
+        var nama = document.getElementById('nama').value;
+        var gaji = document.getElementById('gaji').value;
+        var email = document.getElementById('email').value;
+
+        if(nama != '' && gaji !='' && email != ''){
+
+            var data = {nama: nama, gaji: gaji, email: email};
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "insert.php", true);
+
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    var response = this.responseText;
+                    if(response == 1){
+                        alert("Insert successfully.");
+
+                        load();
+                    }
+                }
+            };
+
+        xhttp.setRequestHeader("Content-Type", "application/json");
+
+        xhttp.send(JSON.stringify(data));
+        }
+
+    }
+
+    function edit(id) {
+        var nama = document.getElementById('nama');
+        var gaji = document.getElementById('gaji');
+        var email = document.getElementById('email');
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "tampil_with_id.php?id="+id, true);
+
+        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+
+                var response = JSON.parse(this.responseText);
+
+                for (var key in response) {
+                    if (response.hasOwnProperty(key)) {
+                        var val = response[key];
+
+                        nama.value = val['nama']; 
+                        gaji.value = val['gaji']; 
+                        email.value = val['email']; 
+
+                    }
+                } 
+
+            }
+        };
+
+        xhttp.send();
+    }
+
+    function hapus(id) {
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.open("GET", "hapus.php?id="+id, true);
+
+        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+
+                var response = this.responseText;
+                if(response == 1){
+                    alert("Delete successfully.");
+
+                    load();
+                }
+
+            }
+        };
+
+        xhttp.send();
+    }
+</script>
+</body>
+</html>
