@@ -27,6 +27,7 @@
             <td></td>
             <td></td>
             <td><button id="btn" onclick="insert()">Submit</button></td>
+            <td><button id="btn_update" onclick="update()" hidden>Update</button></td>
         </tr>
     </table>
     <br>
@@ -71,7 +72,7 @@
                         nama_cell.innerHTML = val['nama']; 
                         gaji_cell.innerHTML = val['gaji']; 
                         email_cell.innerHTML = val['email']; 
-                        aksi_cell.innerHTML = '<button onclick="edit('+ val['id'] +')">Edit</button> | <button onclick="hapus('+ val['id'] +')">Hapus</button>'; 
+                        aksi_cell.innerHTML = '<button onclick="edit('+ val['id'] +')" id="btn_edit">Edit</button> | <button onclick="hapus('+ val['id'] +')">Hapus</button>'; 
                         
                     }
                 } 
@@ -115,10 +116,26 @@
 
     }
 
+    // for (let i = 0; i < btn_edit.length; i++) {
+    //     btn_edit[i].addEventListener("click", function () {
+    //         btn.hidden = true;
+    //         btn_update.hidden = false;
+    //     });
+    // }
+    
+    // btn_edit.addEventListener("click", function () {
+        // });
+        
     function edit(id) {
         var nama = document.getElementById('nama');
         var gaji = document.getElementById('gaji');
         var email = document.getElementById('email');
+        var btn = document.getElementById('btn');
+        var btn_edit = document.getElementById('btn_edit');
+        var btn_update = document.getElementById('btn_update');
+        
+        btn.hidden = true;
+        btn_update.hidden = false;
 
         var xhttp = new XMLHttpRequest();
         xhttp.open("GET", "tampil_with_id.php?id="+id, true);
