@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Foto</title>
+</head>
+<body>
+
+<h1>Data Foto</h1>
+<hr>
+
+<input type="file" id="foto" name="foto" multiple>
+<button id="btnUpload">
+	Upload File
+</button>
+
+<script type="text/javascript">
+	const foto = document.getElementById("foto");
+	const btnUpload = document.getElementById("btnUpload");
+
+	btnUpload.addEventListener("click", function() {
+		const formData = new FormData();
+
+		for (const file of foto.files) {
+			formData.append('foto[]', file);
+		}
+
+		xhr.open("POST", "upload.php");
+		xhr.send();
+
+		console.log(this.response);
+	});
+</script>
+
+</body>
+</html>

@@ -1,36 +1,22 @@
 <table>
 	<input type="hidden" id="id_tipe">
 	<tr>
-		<td>Tipe Kamar</td>
+		<td>Status</td>
 		<td>:</td>
 		<td>
-			<input type="text" id='tipe_kamar'>
+			<input type="text" id='status'>
 		</td>
 	</tr>
 	<tr>
-		<td>Deskripsi</td>
+		<td>Image</td>
 		<td>:</td>
 		<td>
-			<input type="text" id='deskripsi'>
-		</td>
-	</tr>
-	<tr>
-		<td>Harga</td>
-		<td>:</td>
-		<td>
-			<input type="text" id='harga'>
-		</td>
-	</tr>
-	<tr>
-		<td>Jumlah Bed</td>
-		<td>:</td>
-		<td>
-			<input type="number" id="jumlah_bed">
+			<input type="file" id="image" name="image">
 		</td>
 	</tr>
 	<tr>
 		<td colspan="3">
-			<input type="button" id="btn" value="Simpan" onclick="insertNewEmployee();">
+			<input type="button" id="btn" value="Simpan" onclick="insert();">
 			<button id="btn_update" onclick="update()" hidden>Update</button>
 		</td>
 	</tr>
@@ -45,10 +31,8 @@
 		<thead>
 			<tr>
 				<th>No</th>
-				<th>Tipe Kamar</th>
-				<th>Deskripsi</th>
-				<th>Harga</th>
-				<th>Jumlah Bed</th>
+				<th>Image</th>
+				<th>Status</th>
 				<th>Aksi</th>
 			</tr>
 		</thead>
@@ -83,18 +67,14 @@
 
 						let NewRow = empTable.insertRow(0); 
 						let no = NewRow.insertCell(0);
-						let tipe_kamar = NewRow.insertCell(1); 
-						let deskripsi = NewRow.insertCell(2); 
-						let harga = NewRow.insertCell(3);
-						let jumlah_bed = NewRow.insertCell(4);
-						let aksi_cell = NewRow.insertCell(5);
+						let image = NewRow.insertCell(1); 
+						let status = NewRow.insertCell(2);
+						let aksi_cell = NewRow.insertCell(3);
 
 						no.innerHTML = val['no'];
-						tipe_kamar.innerHTML = val['tipe_kamar']; 
-						deskripsi.innerHTML = val['deskripsi']; 
-						harga.innerHTML = val['harga']; 
-						jumlah_bed.innerHTML = val['jumlah_bed'];
-						aksi_cell.innerHTML = '<button onclick="edit('+ val['id_tipe'] +')" id="btn_edit">Edit</button> &bull; <button onclick="hapus('+ val['id_tipe'] +')">Hapus</button>';
+						image.innerHTML = '<img width="100" src='+val['image']+'>'; 
+						status.innerHTML = val['status'];
+						aksi_cell.innerHTML = '<button onclick="edit('+ val['id_image'] +')" id="btn_edit">Edit</button> &bull; <button onclick="hapus('+ val['id_image'] +')">Hapus</button>';
 					}
 				} 
 			}
@@ -103,50 +83,44 @@
 		xhttp.send();
 	}
 
-	function insertNewEmployee() {
+	function insert() {
+		let files = document.getElementById("image").files;
+		let status = document.getElementById("status").value;
 
-		let tipe_kamar = document.getElementById('tipe_kamar').value;
-		let deskripsi = document.getElementById('deskripsi').value;
-		let harga = document.getElementById('harga').value;
-		let jumlah_bed = document.getElementById('jumlah_bed').value;
+		if (files.length > 0) {
+			var formData = new FormData();
 
-		if(tipe_kamar != '' && deskripsi !='' && harga != '' && jumlah_bed != ''){
+			formData.append("image", files[0]);
+			formData.append("status", status);
 
-			let data = {tipe_kamar : tipe_kamar, deskripsi : deskripsi, harga : harga, jumlah_bed : jumlah_bed};
-			let xhttp = new XMLHttpRequest();
-	
+			var xhttp = new XMLHttpRequest();
+
 			xhttp.open("POST", "ajaxfile.php?request=2", true);
 
-
-			xhttp.onreadystatechange = function() {
+			xhttp.onreadystatechange = function () {
 				if (this.readyState == 4 && this.status == 200) {
+					var response = this.responseText;
 
-					let response = this.responseText;
-					if(response == 1){
-						alert("Insert successfully.");
-
-
-						loadEmployees();
-
-						document.getElementById("tipe_kamar").value = '';
-						document.getElementById("deskripsi").value = '';
-						document.getElementById("harga").value = '';
-						document.getElementById("jumlah_bed").value = '';
+					if (response == 1) {
+						alert("Upload Sukses");
+					} else {
+						alert("Upload Gagal");
 					}
 				}
 			};
 
-			xhttp.setRequestHeader("Content-Type", "application/json");
-			xhttp.send(JSON.stringify(data));
+			xhttp.send(formData);
+		} else {
+			alert("Pilih Gambar");
 		}
 	}
 
-	function hapus(id_tipe) {
+	function hapus(id_image) {
 		let xhttp = new XMLHttpRequest();
 		let konfirmasi = confirm("Yakin ? Mau di Hapus ?");
 
 		if (konfirmasi) {
-			xhttp.open("GET", "ajaxfile.php?request=3&id_tipe="+id_tipe, true);
+			xhttp.open("GET", "ajaxfile.php?request=3&id_image="+id_image, true);
 
 			xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
